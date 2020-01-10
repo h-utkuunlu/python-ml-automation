@@ -18,7 +18,7 @@ def load_from_json(file_name):
 
 def retrieve_all_configs(path):
     try:
-        path_list = os.listdir(path)
+        path_list = [os.path.join(path, i) for i in os.listdir(path)]
         configs = []
         for f in path_list:
             if f.endswith(".json"):

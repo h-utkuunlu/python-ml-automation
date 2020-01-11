@@ -28,9 +28,19 @@ def retrieve_all_configs(path):
     except FileNotFoundError:
         print("Path does not exist")
         exit(1)
-        
+
+def convert_arg_str_to_list(string):
+    nums = [int(i) for i in string.lstrip("[").rstrip("]").split(",")]
+    return nums
+    
 parser = argparse.ArgumentParser()
 parser.add_argument("folder_path", help="Path that contains JSON files to be converted into experiments")
+parser.add_argument("-g", "--gpu", help="Available GPU's", type=str, default="[0]")
 args = parser.parse_args()
 
-files = retrieve_all_configs(args.folder_path)
+gpus = convert_arg_str_to_list(args.gpu)
+for i in gpus:
+    print(i)
+    os.system('CUDA_VISIBLE_DEVICES=%d python playground/test.py'%i)
+
+#files = retrieve_all_configs(args.folder_path)

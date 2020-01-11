@@ -32,11 +32,27 @@ def retrieve_all_configs(path):
 def convert_arg_str_to_list(string):
     nums = [int(i) for i in string.lstrip("[").rstrip("]").split(",")]
     return nums
-    
+
+# Parse arguments
 parser = argparse.ArgumentParser()
-parser.add_argument("folder_path", help="Path that contains JSON files to be converted into experiments")
+parser.add_argument("-s", "--script_path", help="Path to script to be executed")
+parser.add_argument("-e", "--exp_conf_path", help="Path that contains experiments represented as JSON files")
 parser.add_argument("-g", "--gpu", help="Available GPU's", type=str, default="[0]")
 args = parser.parse_args()
+
+# Load list of all configurations
+config_list = retrieve_all_configs(args.exp_conf_path)
+
+# Parse config list into shell script line
+script_lines = []
+for config in config_list:
+    string = ""
+    for param in config:
+        string += "--%s %s " %(param, str(config[param])) 
+    script_lines.append(string)
+
+print(script_lines)
+exit()
 
 gpus = convert_arg_str_to_list(args.gpu)
 for i in gpus:

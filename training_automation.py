@@ -34,9 +34,3 @@ parser.add_argument("folder_path", help="Path that contains JSON files to be con
 args = parser.parse_args()
 
 files = retrieve_all_configs(args.folder_path)
-print(files)
-exit()
-
-opt_dict = load_from_json(args.folder_path)
-
-print(opt_dict["name"])

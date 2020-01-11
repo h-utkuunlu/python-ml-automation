@@ -42,7 +42,7 @@ def convert_arg_str_to_list(string):
 
 def thread_func(gpu_no, command_list, file_list, lock):
     while len(command_list) > 0:
-        string = "%d idle" % gpu_no
+        string = "[INFO] GPU %d idle" % gpu_no
         print(string)    
 
         # TODO: this is probably not an optimal way of handling race cond.s
@@ -52,10 +52,10 @@ def thread_func(gpu_no, command_list, file_list, lock):
             else:
                 command = command_list.pop(0)
                 filename = file_list.pop(0)
-
+                print("[INFO] Number of experiments remaining: %d" % len(command_list))
+                
         command = "CUDA_VISIBLE_DEVICES=%d %s" %(gpu_no, command)
         string = "[INFO] Thread %d executing %s" % (gpu_no, command)
-
         retval = os.system(command)
         
         # Move finished experiment
@@ -65,6 +65,9 @@ def thread_func(gpu_no, command_list, file_list, lock):
             os.rename(filename, os.path.join(dirname, "completed", basename))
             #print(os.path.join(dirname, "completed", basename))
 
+    # No more experiments left. Exit the thread
+    print("[INFO] No more experiments left. Exiting thread for GPU %d" % gpu_no)
+    
 def main():
     # Parse arguments
     parser = argparse.ArgumentParser()
